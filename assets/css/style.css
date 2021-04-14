@@ -1,0 +1,101 @@
+/*
+"Be aware of the many CSS selectors available: https://www.w3schools.com/cssref/css_selectors.asp.
+That way, you can intuitively pick the right one for any context...eventually."
+*/
+
+/* For this FEM project, I have not yet made it work fully with the "tab test" (for accessibility). */
+
+
+/************************************************************
+********** For Mobile/Narrow Viewport **********
+************************************************************/
+
+/* Remember I worked with FEM's mobile demo at zoom ??????????. */
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+/* CSS rules:
+font-family: 'Josefin Sans', sans-serif;
+*/
+
+
+
+/****************************************
+header
+****************************************/
+
+
+/****************************************
+main
+****************************************/
+
+
+/****************************************
+footer
+****************************************/
+
+.attribution {
+    text-align: center;
+    font-size: 11px;
+}
+
+.attribution a {
+    color: hsl(228, 45%, 44%); /*hsl(hue, saturation, lightness)*/
+}
+
+/************************************************************
+********** For Desktop/Wide Viewport **********
+************************************************************/
+
+/*@media screen and (min-width: 850px) {*/ /* starting at width of 850px, the code below (which is only for CHANGES to the above code) will take effect. */
+
+    /****************************************
+    header
+    ****************************************/
+
+
+    /****************************************
+    main
+    ****************************************/
+
+
+    /****************************************
+    footer
+    ****************************************/
+
+/* } */
+
+
+
+
+
+
+
+
+
+
+
+
+/* KEEP THIS AS A REFERENCE:
+parent {
+    display: flex;    mandatory 
+    flex-direction: ;    row (default) | row-reverse | column | column-reverse 
+    justify-content: ;    flex-start (default) | flex-end | center | space-between | space-around | space-evenly 
+    align-items: ;    flex-start | flex-end | center | (baseline) | stretch (default) 
+    flex-wrap: ;    nowrap (default) | wrap | wrap-reverse 
+    align-content: ;    flex-start | flex-end | center | space-between | space-around | stretch (default) 
+}
+
+child {
+    align-self: ;    flex-start | flex-end | center | (baseline) | stretch (default)
+    flex-grow: ;    0 is default 
+    flex-shrink: ;    1 is default 
+    flex-basis: ;    auto is default 
+    order: ;    0 is default 
+}
+*/
