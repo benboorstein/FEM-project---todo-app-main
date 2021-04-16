@@ -38,40 +38,34 @@
     </header>
 
     <main>
-      <!-- QQQ: Should this be added as a list item below, so that styling it is easier? -->
-      <section id="add-item">
-        <form>
-          <!-- QQQ: not sure how to fit this in. And is it even supposed to be a checkbox? Or, less likely, a radio button? Or neither? 
-          <label class="???">
-            <input type="checkbox" id="select"/>
-          </label>
+      <section id="list-container">
+        <ul id="list">
+          <li>
+            <form id="add-item"> 
+              <label class="???">
+                <input type="checkbox" id="select">
+              </label>
+              <input type="text" required placeholder="Create a new todo..." id="create-todo">
+            </form>
+          </li>
+          <!--
+          <li>Family time<span class="close">x</span></li>
+          <li>House things<span class="close">x</span></li>
+          <li>Run in the sun<span class="close">x</span></li>
+          <li>Cook rice for week<span class="close">x</span></li>
+          <li>Buy eggs<span class="close">x</span></li>
+          <li>Work on programming<span class="close">x</span></li>
+          <li>Shower<span class="close">x</span></li>
           -->
-          <input type="text" required placeholder="Create a new todo...">
-        </form>
-      </section>
-
-      <section>
-        <div id="list-container">
-          <ul id="item-list">
-            <!--
-            <li>Family time<span class="close">x</span></li>
-            <li>House things<span class="close">x</span></li>
-            <li>Run in the sun<span class="close">x</span></li>
-            <li>Cook rice for week<span class="close">x</span></li>
-            <li>Buy eggs<span class="close">x</span></li>
-            <li>Work on programming<span class="close">x</span></li>
-            <li>Shower<span class="close">x</span></li>
-            -->
-            <li>7 items left<button>Clear Completed</button></li> <!-- QQQ: Is this supposed to be a button? If so, then is it supposed to be type="submit"? -->
-          </ul>
-        </div>
-      </section>
-
-      <!-- QQQ: Should this be added as a list item above, so that styling it is easier? -->
-      <section id="items-visible">
-        <button>All</button> <!-- QQQ: Are these supposed to be buttons? If so, then are they supposed to be type="submit"? -->
-        <button>Active</button>
-        <button>Completed</button>
+          <li>
+            7 items left<button>Clear Completed</button>
+          </li>
+          <li id="items-visible">
+            <button>All</button>
+            <button>Active</button>
+            <button>Completed</button>
+          </li>
+        </ul>
       </section>
 
       <section>
