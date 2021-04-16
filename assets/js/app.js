@@ -12,6 +12,7 @@
     // no code needed
 
 // 3. when user hits Enter...
+// VERSION 1:
 function addListItem() {
     document.getElementById('create-todo').addEventListener('keypress', function(event) {
         if (event.key == 'Enter') {
@@ -26,13 +27,48 @@ function addListItem() {
                 newListItem.appendChild(textNode); // appending the text node to the new list item
                 list.appendChild(newListItem); // appending the new list item to the list
 
-                inputValue = ''
+                input.value = ''
             }   
         }
     })
 }
 
 addListItem()
+
+// VERSION 2:
+// let input = document.getElementById('create-todo')
+// let inputValue = input.value
+
+// const todos = [
+//     inputValue // no idea how I'd get items in the array
+// ]
+
+
+// document.getElementById('create-todo').addEventListener('keypress', function(event, todos) {
+//     for (let i = 0; i < todos.length; i++) {
+//         if (event.key == 'Enter') {
+//             // ...add what has been typed (the input value) to the list    
+//             if (todos[i] !== '') {
+//                 let list = document.getElementById('list') // getting the list
+//                 let newListItem = document.createElement('li'); // creating a <li> node
+//                 let textNode = document.createTextNode(todos[i]); // converting inputValue to a text node
+//                 newListItem.appendChild(textNode); // appending the text node to the new list item
+//                 list.appendChild(newListItem); // appending the new list item to the list
+
+//                 input.value = ''
+//             }   
+//         }
+//     }
+// }
+
+
+
+
+
+
+
+
+
 
 // function deleteListItem() {
 
