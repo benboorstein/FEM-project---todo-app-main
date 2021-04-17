@@ -76,6 +76,8 @@ function createNewListItem() {
     newListItem.appendChild(textNode)
     let refEl = document.getElementById("follows-new-items") // get the reference element (which comes AFTER the inserted element)
     list.insertBefore(newListItem, refEl) // insert the newListItem into the list before refEl
+
+    input.value = ''
 }
 
 function deleteListItem() {
@@ -92,14 +94,13 @@ function deleteListItem() {
     })
 }
 
-function addAndRemoveItems() {
+// function addAndRemoveItems() { // Probably don't need
     document.getElementById('create-todo').addEventListener('keypress', function(event) {
         if (inputValue !== '' && event.key == 'Enter') {
             createNewListItem()
-            input.value = ''
             deleteListItem()
         }
     })
-}
+// }
 
-addAndRemoveItems()
+// addAndRemoveItems()
