@@ -11,11 +11,12 @@
 // 2. user types item description
     // no code needed
 
+/* TEMP COMMENT OUT WHILE EXPERIMENTING BELOW
 // 3. when user hits Enter, add what has been typed (the input value) to the list...and then remove
 function addAndRemoveItems() {
     document.getElementById('create-todo').addEventListener('keypress', function(event) {
         if (event.key == 'Enter') {
-            let input = document.getElementById('create-todo') // getting the input
+            let input = document.getElementById('create-todo') // get the input
             let inputValue = input.value
 
             if (inputValue !== '') {
@@ -27,6 +28,8 @@ function addAndRemoveItems() {
                 let refEl = document.getElementById("follows-new-items") // get the reference element (which comes AFTER the inserted element)
                 list.insertBefore(newListItem, refEl) // insert the newListItem into the list before refEl
 
+                input.value = ''
+
                 // The new close button of the new list item
                 let closeBtn = document.createElement('span') // create a <span> node
                 let txtNd = document.createTextNode('x') // convert x to a text node
@@ -37,13 +40,13 @@ function addAndRemoveItems() {
                     newListItem.remove()
                 })
 
-                input.value = ''
             }   
         }
     })
 }
 
 addAndRemoveItems()
+*/
 
 
 // 4. "items left" number goes up with each item added and down with each item removed
@@ -60,29 +63,43 @@ addAndRemoveItems()
 
 
 
+// EXPERIMENTING
+// 3. when user hits Enter, add what has been typed (the input value) to the list...and then remove
+let input = document.getElementById('create-todo') // get the input
+let inputValue = input.value
 
-// DOESN'T WORK
-// let input = document.getElementById('create-todo')
-// let inputValue = input.value
+let newListItem = document.createElement('li')
 
-// const todos = [
-//     inputValue // no idea how I'd get items in the array
-// ]
+function createNewListItem() {
+    let list = document.getElementById('list')
+    let textNode = document.createTextNode(inputValue) // convert inputValue to a text node
+    newListItem.appendChild(textNode)
+    let refEl = document.getElementById("follows-new-items") // get the reference element (which comes AFTER the inserted element)
+    list.insertBefore(newListItem, refEl) // insert the newListItem into the list before refEl
+}
 
+function deleteListItem() {
+    // create close button
+    let closeBtn = document.createElement('span') // create a <span> node
+    let txtNd = document.createTextNode('x') // convert x to a text node
+    closeBtn.appendChild(txtNd) // append the text node to the <span>
+    closeBtn.className = 'close'
+    newListItem.appendChild(closeBtn) // append the close button to the new list item
+    
+    // remove list item
+    closeBtn.addEventListener('click', function() { // remove list item
+        newListItem.remove()
+    })
+}
 
-// document.getElementById('create-todo').addEventListener('keypress', function(event, todos) {
-//     for (let i = 0; i < todos.length; i++) {
-//         if (event.key == 'Enter') {
-//             // ...add what has been typed (the input value) to the list    
-//             if (todos[i] !== '') {
-//                 let list = document.getElementById('list') // getting the list
-//                 let newListItem = document.createElement('li') // creating a <li> node
-//                 let textNode = document.createTextNode(todos[i]) // converting inputValue to a text node
-//                 newListItem.appendChild(textNode) // appending the text node to the new list item
-//                 list.appendChild(newListItem) // appending the new list item to the list
+function addAndRemoveItems() {
+    document.getElementById('create-todo').addEventListener('keypress', function(event) {
+        if (inputValue !== '' && event.key == 'Enter') {
+            createNewListItem()
+            input.value = ''
+            deleteListItem()
+        }
+    })
+}
 
-//                 input.value = ''
-//             }   
-//         }
-//     }
-// }
+addAndRemoveItems()
