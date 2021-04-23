@@ -1,18 +1,5 @@
-// My advice:
-// - Worry about CSS last
-// - Try starting the JS: displaying a list of items that come from a JS array, not hard-coded. Adding a created item to a list of existing items.
-// - Adjust the HTML where necessary
-//-----------------------------------------------------------------------------
+/* VERSION 1 (this version works but sucks, so don't use it for anything more than reference)
 
-
-// 1. user clicks in input window
-    // no code needed
-
-// 2. user types item description
-    // no code needed
-
-/* TEMP COMMENT OUT WHILE EXPERIMENTING BELOW
-// 3. when user hits Enter, add what has been typed (the input value) to the list...and then remove
 function addAndRemoveItems() {
     document.getElementById('create-todo').addEventListener('keypress', function(event) {
         if (event.key == 'Enter') {
@@ -49,58 +36,59 @@ addAndRemoveItems()
 */
 
 
-// 4. "items left" number goes up with each item added and down with each item removed
 
-// 5. deal with rest at a later time
+// VERSION 2 (this version also works but also sucks, so don't use it for anything more than reference)
 
+// QQQ: Why in the world is hitting the enter key working with the program the way it is right now?
 
-
-
-
-
-
-
-
-
-
-// EXPERIMENTING
-// 3. when user hits Enter, add what has been typed (the input value) to the list...and then remove
 let input = document.getElementById('create-todo') // get the input
-let inputValue = input.value
 
-let newListItem = document.createElement('li')
-
-function createNewListItem() {
-    let list = document.getElementById('list')
-    let textNode = document.createTextNode(inputValue) // convert inputValue to a text node
+function createAndDeleteListItem() {
+    // list item anatomy
+    let newListItem = document.createElement('li')
+    let textNode = document.createTextNode(input.value) // convert input.value to a text node
     newListItem.appendChild(textNode)
+
+    // place the list item
+    let list = document.getElementById('list')
     let refEl = document.getElementById("follows-new-items") // get the reference element (which comes AFTER the inserted element)
     list.insertBefore(newListItem, refEl) // insert the newListItem into the list before refEl
 
-    input.value = ''
-}
-
-function deleteListItem() {
-    // create close button
+    // The new close button (of the new list item) anatomy
     let closeBtn = document.createElement('span') // create a <span> node
+    closeBtn.className = 'close' // need this line?
     let txtNd = document.createTextNode('x') // convert x to a text node
+
+    // place the new close button
     closeBtn.appendChild(txtNd) // append the text node to the <span>
-    closeBtn.className = 'close'
     newListItem.appendChild(closeBtn) // append the close button to the new list item
-    
-    // remove list item
-    closeBtn.addEventListener('click', function() { // remove list item
-        newListItem.remove()
+
+    input.value = '' // clear input field
+    input.focus() // set cursor back to beginning of input field
+
+    closeBtn.addEventListener('click', function(event) {
+        event.target.parentElement.remove()
     })
 }
 
-// function addAndRemoveItems() { // Probably don't need
-    document.getElementById('create-todo').addEventListener('keypress', function(event) {
-        if (inputValue !== '' && event.key == 'Enter') {
-            createNewListItem()
-            deleteListItem()
-        }
-    })
-// }
+document.getElementById('add-item-btn').addEventListener('click', manageListItem)
 
-// addAndRemoveItems()
+function manageListItem(event) {
+
+    if (input.value !== '') {
+        event.preventDefault() // this is saying: don't refresh the page each time a new item is submitted...
+        // QQQ: When the above line is commented out, "please fill out this field." shows when input field is empty and button is clicked AND when input field is empty after a list item has been created. Why is this?
+        // QQQ: When the above line is NOT commented out, "please fill out this field." shows only when input field is empty and button is clicked BUT NOT when input field is empty after a list item has been created. This is how I want it. But still, why is this?
+
+        createAndDeleteListItem()
+    }
+}
+
+
+
+
+
+// Start this over
+// Generally, MAKE SMALL FUNCTIONS, each one just doing one thing, and then pass these functions into a main function.
+// Remember WHEN things are stored (e.g., the problem with using inputValue instead of input.value)
+// Maybe once I have a solid program, then add back in using 'Enter' instead of or in addition to the add-item-btn
