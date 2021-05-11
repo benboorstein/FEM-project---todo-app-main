@@ -152,7 +152,6 @@ function addCloseBtn(newItem) {
 function addCheckbox(newItem, tNode) {
     let checkbox = document.createElement('input')
     checkbox.type = 'checkbox'
-    checkbox.className = 'blah' // KEEP THIS LINE???????
     newItem.insertBefore(checkbox, tNode) // insert the checkbox into the newListItem before textNode
 
     checkbox.addEventListener('change', function(event) {
@@ -188,9 +187,8 @@ let toDos = []
 
 document.getElementById('clear-completed-btn').addEventListener('click', function() {
     Array.from(list.children).forEach(listItem => { // 'list' (which is the variable name for my 'ul') is just one object, so we need to use 'list.children'. 'list.children', however, is an array-like object, not an array, so we need to make it an array with 'Array.from'
-        if (document.getElementsByClassName('blah').checked) { // LEFT OFF HERE: need to just get the checkbox
-            // listItem.remove()
-            listItem.style.backgroundColor = 'red'
+        if (listItem.firstElementChild.checked) {
+            listItem.remove()
         }
     })
 })
