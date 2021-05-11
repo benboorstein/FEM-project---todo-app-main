@@ -89,18 +89,18 @@ function manageListItem(event) {
 // Generally, MAKE SMALL FUNCTIONS, each one just doing one or a couple things, and then pass these functions into a main function.
 // Remember WHEN IN TIME things are stored (e.g., the problem accessing newListItem)
 
-// VERSION 3
+// VERSION 3 (work in progress...)
 
-// QQQ: Why in the world is hitting the enter key working with the program the way it is?
+// Q: Why is hitting Enter working with the program the way it is?
+// A: The Enter key still works probably because pressing Enter within any form element triggers the submission of the form...equivalent to clicking the button. At least I think. Regardless, it works.
 
 let input = document.getElementById('create-todo') // get the input
+const list = document.getElementById('list')
 
 document.getElementById('add-item-btn').addEventListener('click', function(event) {
 
     if (input.value !== '') {
-        event.preventDefault() // this is saying: don't refresh the page each time a new item is submitted...
-        // QQQ: When the above line is commented out, "please fill out this field." shows when input field is empty and button is clicked AND when input field is empty after a list item has been created. Why is this?
-        // QQQ: When the above line is NOT commented out, "please fill out this field." shows only when input field is empty and button is clicked BUT NOT when input field is empty after a list item has been created. This is how I want it. But still, why is this?
+        event.preventDefault() // this is saying: don't refresh the page each time a new item is submitted
 
         addTodo()
     }
@@ -110,24 +110,34 @@ document.getElementById('add-item-btn').addEventListener('click', function(event
 function addTodo() {
     // list item anatomy
     let newListItem = document.createElement('li')
+    newListItem.id = toDos.length + 1 // Remember this matches what's getting pushed to the toDos array just below
     let textNode = document.createTextNode(input.value) // convert input.value to a text node
     newListItem.appendChild(textNode)
 
     // place the list item
-    let list = document.getElementById('list')
     let refEl = document.getElementById("follows-new-items") // get the reference element (which comes AFTER the inserted element)
     list.insertBefore(newListItem, refEl) // insert the newListItem into the list before refEl
 
+    toDos.push(
+        {
+            text: input.value,
+            completed: false,
+            id: toDos.length + 1
+        }
+    )
+
     // addTodo also invokes two other functions, 'addCloseBtn' and 'prepareUI'
     addCloseBtn(newListItem) // addCloseBtn accepts one argument - the newly created list item in addTodo. ***This is key so that the addCloseBtn function has access to newListItem.***
+    addCheckbox(newListItem, textNode)
     prepareUI()
+    
 }
 
 // addCloseBtn creates the 'x' span, appends it to the list item, and sets up its event listener (to remove the corresponding list item when clicked)
 function addCloseBtn(newItem) {
     // The new close button (of the new list item) anatomy
     let closeBtn = document.createElement('span') // create a <span> node
-    closeBtn.className = 'close' // need this line?
+    closeBtn.className = 'close'
     let txtNd = document.createTextNode('x') // convert x to a text node
 
     // place the new close button
@@ -139,10 +149,48 @@ function addCloseBtn(newItem) {
     })
 }
 
+function addCheckbox(newItem, tNode) {
+    let checkbox = document.createElement('input')
+    checkbox.type = 'checkbox'
+    checkbox.className = 'blah' // KEEP THIS LINE???????
+    newItem.insertBefore(checkbox, tNode) // insert the checkbox into the newListItem before textNode
+
+    checkbox.addEventListener('change', function(event) {
+        if (event.target.checked) {
+            newItem.style.textDecoration = 'line-through' // ************QQQ************: ONLY PROBLEM: the x is included in the line-through. What's wrong is that I'm using newListItem (appearing here as "newItem"). So I tried using textNode (appearing here as "tNode") instead, "input.value" instead, and "inputValue" (with input.value stored in it) instead, but all generate errors. How do I fix? // Possible solution but do anyway: add a class and address in CSS. Class could be something like ".completed"
+        } else {
+            newItem.style.textDecoration = 'none'
+        }
+    })
+}
+
 // prepareUI resets the input's value and focuses it
 function prepareUI() {
     input.value = '' // clear input field
     input.focus() // set cursor back to beginning of input field
 }
 
-// QQQ: Should I continue with this project, trying to create the other JS needed? I'd like to.
+
+
+// STATES pseuocode:
+
+// When a list item has been completed in real life, the options are...
+// ...click the x that's part of that list item (to remove individual list items) - ALREADY CODED
+// ...drag the list item into "Drag and drop to reorder list" (to remove individual list items)
+// ...click/check the checkbox that's part of that item and then clear it by clicking the "clear completed" button (can remove several at one time) - ALREADY CODED
+// However many items are left on the list (not including those whose checkboxes have been checked), the "items left" number should reflect this
+// Clicking "All" presents all (checked and unchecked) list items 
+// Clicking "Active" presents just unchecked list items
+// Clicking "Completed" presents just checked list items
+
+let toDos = []
+
+
+document.getElementById('clear-completed-btn').addEventListener('click', function() {
+    Array.from(list.children).forEach(listItem => { // 'list' (which is the variable name for my 'ul') is just one object, so we need to use 'list.children'. 'list.children', however, is an array-like object, not an array, so we need to make it an array with 'Array.from'
+        if (document.getElementsByClassName('blah').checked) { // LEFT OFF HERE: need to just get the checkbox
+            // listItem.remove()
+            listItem.style.backgroundColor = 'red'
+        }
+    })
+})
