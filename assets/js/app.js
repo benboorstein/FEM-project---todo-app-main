@@ -110,6 +110,7 @@ document.getElementById('add-item-btn').addEventListener('click', function(event
 function addTodo() {
     // list item anatomy
     let newListItem = document.createElement('li')
+    newListItem.className = 'new-list-item item-completed is-hidden' // may not need to keep the 'new-list-item' class
     newListItem.id = toDos.length + 1 // Remember this matches what's getting pushed to the toDos array just below
     let textNode = document.createTextNode(input.value) // convert input.value to a text node
     newListItem.appendChild(textNode)
@@ -117,6 +118,11 @@ function addTodo() {
     // place the list item
     let refEl = document.getElementById("follows-new-items") // get the reference element (which comes AFTER the inserted element)
     list.insertBefore(newListItem, refEl) // insert the newListItem into the list before refEl
+
+    newListItem.classList.remove('item-completed') // this needs to be here because of newListItem's 'item-completed' class being set (in the CSS) to 'text-decoration: line-through;'
+    newListItem.classList.remove('is-hidden') // this needs to be here because of newListItem's 'is-hidden' class being set (in the CSS) to 'display: none;'
+    // newListItem.style.display = 'block' // works but not what I want
+    // document.getElementsByClassName('new-list-item').classList.remove('is-hidden') // doesn't work and I'm not sure why
 
     toDos.push(
         {
@@ -150,15 +156,17 @@ function addCloseBtn(newItem) {
 }
 
 function addCheckbox(newItem, tNode) {
-    let checkbox = document.createElement('input')
+    let checkbox = document.createElement('input') 
     checkbox.type = 'checkbox'
     newItem.insertBefore(checkbox, tNode) // insert the checkbox into the newListItem before textNode
 
-    checkbox.addEventListener('change', function(event) {
+    checkbox.addEventListener('click', function(event) { // better to have event be 'click' or 'change' here? Seems to make no difference
         if (event.target.checked) {
-            newItem.style.textDecoration = 'line-through' // ************QQQ************: ONLY PROBLEM: the x is included in the line-through. What's wrong is that I'm using newListItem (appearing here as "newItem"). So I tried using textNode (appearing here as "tNode") instead, "input.value" instead, and "inputValue" (with input.value stored in it) instead, but all generate errors. How do I fix? // Possible solution but do anyway: add a class and address in CSS. Class could be something like ".completed"
+            newItem.classList.add('item-completed') // ************PROBLEM TO FIX: the x is included in the line-through. What's wrong is that I'm using newListItem (appearing here as "newItem").
+            // document.querySelector('.new-list-item').childNodes[1].classList.add('item-completed') // KEEP for ref for now
         } else {
-            newItem.style.textDecoration = 'none'
+            newItem.classList.remove('item-completed')
+            // document.querySelector('.new-list-item').childNodes[1].classList.remove('item-completed') // KEEP for ref for now
         }
     })
 }
@@ -171,24 +179,67 @@ function prepareUI() {
 
 
 
-// STATES pseuocode:
 
-// When a list item has been completed in real life, the options are...
-// ...click the x that's part of that list item (to remove individual list items) - ALREADY CODED
-// ...drag the list item into "Drag and drop to reorder list" (to remove individual list items)
-// ...click/check the checkbox that's part of that item and then clear it by clicking the "clear completed" button (can remove several at one time) - ALREADY CODED
-// However many items are left on the list (not including those whose checkboxes have been checked), the "items left" number should reflect this
-// Clicking "All" presents all (checked and unchecked) list items 
-// Clicking "Active" presents just unchecked list items
-// Clicking "Completed" presents just checked list items
+
+
+
 
 let toDos = []
 
-
+// good how it is, don't change
 document.getElementById('clear-completed-btn').addEventListener('click', function() {
     Array.from(list.children).forEach(listItem => { // 'list' (which is the variable name for my 'ul') is just one object, so we need to use 'list.children'. 'list.children', however, is an array-like object, not an array, so we need to make it an array with 'Array.from'
-        if (listItem.firstElementChild.checked) {
+        if (listItem.firstElementChild.checked) { // 'firstChild' or 'firstElementChild'? Doesn't seem to make a difference here
             listItem.remove()
+        }
+    })
+})
+
+
+
+/* LEFT OFF HERE: OoO right now:
+
+- FIRST: Go to addCheckbox function's "PROBLEM TO FIX" line
+Then:
+- updating "items left"
+- drag and drop
+"But before you write the real code, describe:
+- how might you update the indicator for 'items left'?
+- how does its state map to the state of the list?
+- Which user interactions affect its state?"
+
+*/
+
+
+// "All" button - seems to be working properly
+document.getElementById('all-btn').addEventListener('click', function() {
+    Array.from(list.children).forEach(listItem => {
+        if (listItem.firstElementChild.checked) {
+            listItem.classList.remove('is-hidden')
+        } else {
+            listItem.classList.remove('is-hidden')
+        }
+    })
+})
+
+// "Active" button - seems to be working properly
+document.getElementById('active-btn').addEventListener('click', function() {
+    Array.from(list.children).forEach(listItem => {
+        if (listItem.firstElementChild.checked) {
+            listItem.classList.add('is-hidden')
+        } else {
+            listItem.classList.remove('is-hidden')
+        }
+    })
+})
+
+// "Completed" button - seems to be working properly
+document.getElementById('completed-btn').addEventListener('click', function() {
+    Array.from(list.children).forEach(listItem => {
+        if (listItem.firstElementChild.checked == false) {
+            listItem.classList.add('is-hidden')
+        } else {
+            listItem.classList.remove('is-hidden')
         }
     })
 })
