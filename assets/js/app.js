@@ -96,6 +96,8 @@ function manageListItem(event) {
 
 let input = document.getElementById('create-todo') // get the input
 const list = document.getElementById('list')
+let numItemsLeft = document.getElementById('num-items-left') // NEW LINE - self-explanatory
+numItemsLeft.textContent = 0 // NEW LINE - sets 'items left' number to 0 upon loading
 
 document.getElementById('add-item-btn').addEventListener('click', function(event) {
 
@@ -110,16 +112,19 @@ document.getElementById('add-item-btn').addEventListener('click', function(event
 function addTodo() {
     // list item anatomy
     let newListItem = document.createElement('li')
-    newListItem.className = 'new-list-item item-completed is-hidden' // may not need to keep the 'new-list-item' class
+    newListItem.className = 'new-list-item is-hidden' // may not need to keep the 'new-list-item' class
     newListItem.id = toDos.length + 1 // Remember this matches what's getting pushed to the toDos array just below
     let textNode = document.createTextNode(input.value) // convert input.value to a text node
-    newListItem.appendChild(textNode)
+    let inputTextSpan = document.createElement('span') // create a <span> node
+    inputTextSpan.className = 'item-completed'
+    inputTextSpan.appendChild(textNode)
+    newListItem.appendChild(inputTextSpan)
 
     // place the list item
     let refEl = document.getElementById("follows-new-items") // get the reference element (which comes AFTER the inserted element)
     list.insertBefore(newListItem, refEl) // insert the newListItem into the list before refEl
 
-    newListItem.classList.remove('item-completed') // this needs to be here because of newListItem's 'item-completed' class being set (in the CSS) to 'text-decoration: line-through;'
+    inputTextSpan.classList.remove('item-completed') // this needs to be here because of inputTextSpan's 'item-completed' class being set (in the CSS) to 'text-decoration: line-through;'
     newListItem.classList.remove('is-hidden') // this needs to be here because of newListItem's 'is-hidden' class being set (in the CSS) to 'display: none;'
     // newListItem.style.display = 'block' // works but not what I want
     // document.getElementsByClassName('new-list-item').classList.remove('is-hidden') // doesn't work and I'm not sure why
@@ -134,9 +139,10 @@ function addTodo() {
 
     // addTodo also invokes two other functions, 'addCloseBtn' and 'prepareUI'
     addCloseBtn(newListItem) // addCloseBtn accepts one argument - the newly created list item in addTodo. ***This is key so that the addCloseBtn function has access to newListItem.***
-    addCheckbox(newListItem, textNode)
+    addCheckbox(newListItem, inputTextSpan)
     prepareUI()
-    
+
+    numItemsLeft.textContent = toDos.length // NEW LINE - increments the 'items left' number every time a list item is added 
 }
 
 // addCloseBtn creates the 'x' span, appends it to the list item, and sets up its event listener (to remove the corresponding list item when clicked)
@@ -151,22 +157,25 @@ function addCloseBtn(newItem) {
     newItem.appendChild(closeBtn) // append the close button to the new list item
 
     closeBtn.addEventListener('click', function(event) {
-        event.target.parentElement.remove()
+        event.target.parentElement.remove() // this just removes the list item from the UI
+        toDos.splice(toDos[newItem.id - 1], 1) // NEW LINE - removes from the toDos array the item on which the 'x' is clicked - QQQ: this seems to work, but see in console how the IDs reorder...Is this what we want?
+        numItemsLeft.textContent = toDos.length // NEW LINE - resets the 'items-left' number, given the change in the toDos array length
     })
 }
 
-function addCheckbox(newItem, tNode) {
-    let checkbox = document.createElement('input') 
+function addCheckbox(newItem, textSpan) {
+    let checkbox = document.createElement('input')
     checkbox.type = 'checkbox'
-    newItem.insertBefore(checkbox, tNode) // insert the checkbox into the newListItem before textNode
+    newItem.insertBefore(checkbox, textSpan) // insert the checkbox into the newListItem before inputTextSpan
 
     checkbox.addEventListener('click', function(event) { // better to have event be 'click' or 'change' here? Seems to make no difference
         if (event.target.checked) {
-            newItem.classList.add('item-completed') // ************PROBLEM TO FIX: the x is included in the line-through. What's wrong is that I'm using newListItem (appearing here as "newItem").
-            // document.querySelector('.new-list-item').childNodes[1].classList.add('item-completed') // KEEP for ref for now
+            textSpan.classList.add('item-completed')
+            toDos.splice(toDos[newItem.id - 1], 1) // NEW LINE - QQQ: this works here, but because it needs to be able to be undone, I'm not sure it's the correct way to do it in this particular case 
+            numItemsLeft.textContent = toDos.length // NEW LINE - QQQ: same as line just above
         } else {
-            newItem.classList.remove('item-completed')
-            // document.querySelector('.new-list-item').childNodes[1].classList.remove('item-completed') // KEEP for ref for now
+            textSpan.classList.remove('item-completed')
+            // QQQ: Assuming the user has checked the box (and therefore the 'items left' number goes down 1) but then decides to uncheck the box (and therefore the 'items left' number needs to go back up 1, i.e., the previous action from the 'if' clause needs to be UNDONE), where/how do I handle this?
         }
     })
 }
@@ -177,39 +186,17 @@ function prepareUI() {
     input.focus() // set cursor back to beginning of input field
 }
 
-
-
-
-
-
-
-
 let toDos = []
 
-// good how it is, don't change
+// "Clear Completed" button - seems to be working properly
 document.getElementById('clear-completed-btn').addEventListener('click', function() {
     Array.from(list.children).forEach(listItem => { // 'list' (which is the variable name for my 'ul') is just one object, so we need to use 'list.children'. 'list.children', however, is an array-like object, not an array, so we need to make it an array with 'Array.from'
         if (listItem.firstElementChild.checked) { // 'firstChild' or 'firstElementChild'? Doesn't seem to make a difference here
             listItem.remove()
+            toDos.splice(toDos[listItem.id - 1], 1) // NEW LINE - seems to work properly here
         }
     })
 })
-
-
-
-/* LEFT OFF HERE: OoO right now:
-
-- FIRST: Go to addCheckbox function's "PROBLEM TO FIX" line
-Then:
-- updating "items left"
-- drag and drop
-"But before you write the real code, describe:
-- how might you update the indicator for 'items left'?
-- how does its state map to the state of the list?
-- Which user interactions affect its state?"
-
-*/
-
 
 // "All" button - seems to be working properly
 document.getElementById('all-btn').addEventListener('click', function() {
@@ -243,3 +230,9 @@ document.getElementById('completed-btn').addEventListener('click', function() {
         }
     })
 })
+
+/* LEFT OFF HERE
+OoO:
+- updating "items left"
+- drag and drop
+*/
