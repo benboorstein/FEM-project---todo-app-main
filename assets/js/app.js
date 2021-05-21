@@ -385,7 +385,7 @@ Whenever one of the three buttons is clicked...
 - And 'write' those items on the whiteboard, in the order they were added to the database
 */
 
-// // "All" button - bad
+// // "All" button - fix
 // document.getElementById('all-btn').addEventListener('click', function() {
 //     Array.from(list.children).forEach(listItem => {
 //         if (listItem.firstElementChild.checked || listItem.firstElementChild.checked == false) {
@@ -394,29 +394,35 @@ Whenever one of the three buttons is clicked...
 //     })
 // })
 
-// "Active" button - bad
+// LEFT OFF HERE - "Active" button - fix
+// Whenever one of the three buttons is clicked...
 document.getElementById('active-btn').addEventListener('click', function() {
+
+    // Erase the whiteboard so you start clean (the white board has no memory of what was just written on it)
+    // NOTE: I'm doing it this way instead of the way you did because of the way my <ul> (with id of "list") has in it other <li> litems besides just the dynamically added <li> items
     Array.from(list.children).forEach(listItem => {
         if (listItem.firstElementChild.checked || listItem.firstElementChild.checked == false) {
             listItem.remove()
             // numItemsLeft.textContent = 0 // NEED?
         }
     })
+
+    // Refer to the database, containing all the items ever added to it [and] Filter it by the ones that should be displayed based on the button that was clicked 
     let newToDos = toDos.filter(toDosObj => toDosObj.completed == false)
 
-    for (let i = 0; i < newToDos.length; i++) {
-
-        newToDos[i] = document.createElement('li')
-        newToDos[i].className = 'new-list-item'
-        newToDos[i].id = toDos.length + 1
+    // And 'write' those items on the whiteboard, in the order they were added to the database...minus the part where you push to ToDos
+    newToDos.forEach(item => {
+        item = document.createElement('li')
+        item.className = 'new-list-item'
+        item.id = toDos.length + 1
         let textNode = document.createTextNode(input.value)
         let inputTextSpan = document.createElement('span')
         inputTextSpan.className = 'item-completed'
         inputTextSpan.appendChild(textNode)
-        newToDos[i].appendChild(inputTextSpan)
+        item.appendChild(inputTextSpan)
 
         let refEl = document.getElementById("follows-new-items")
-        list.insertBefore(newToDos[i], refEl)
+        list.insertBefore(item, refEl)
 
         inputTextSpan.classList.remove('item-completed')
 
@@ -428,18 +434,16 @@ document.getElementById('active-btn').addEventListener('click', function() {
         //     }
         // )
 
-        addCloseBtn(newToDos[i])
-        addCheckbox(newToDos[i], inputTextSpan)
+        addCloseBtn(item)
+        addCheckbox(item, inputTextSpan)
         prepareUI()
             
-        updateItemsLeft(newToDos[i], false)
-    }
-    
+        // updateItemsLeft(item, false) // not sure why having this function call in here causes a problem
+    })
 
-    // numItemsLeft.textContent = ????? // NEED?
 })
 
-// // "Completed" button - bad
+// // "Completed" button - fix
 // document.getElementById('completed-btn').addEventListener('click', function() {
 //     Array.from(list.children).forEach(listItem => {
 //         if (listItem.firstElementChild.checked || listItem.firstElementChild.checked == false) {
