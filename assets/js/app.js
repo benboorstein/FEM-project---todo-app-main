@@ -250,15 +250,7 @@ document.getElementById('completed-btn').addEventListener('click', function() {
 
 
 
-
-
-
-
-
-
-
-
-// VERSION 4 (work in progress...)
+// VERSION 4 (not ideal, but much better than the previous versions)
 
 // Q: Why is hitting Enter working with the program the way it is?
 // A: The Enter key still works probably because pressing Enter within any form element triggers the submission of the form...equivalent to clicking the button. At least I think. Regardless, it works.
@@ -267,7 +259,7 @@ document.getElementById('completed-btn').addEventListener('click', function() {
 let input = document.getElementById('create-todo') // get the input
 const list = document.getElementById('list')
 let numItemsLeft = document.getElementById('num-items-left')
-numItemsLeft.textContent = 0 // sets 'items left' number to 0 upon loading
+numItemsLeft.textContent = '0' // sets 'items left' number to 0 upon loading
 
 // 'Add it!' button
 document.getElementById('add-item-btn').addEventListener('click', function(event) {
@@ -301,7 +293,7 @@ function addToDo() {
     newListItem.appendChild(inputTextSpan)
 
     // place the list item
-    let refEl = document.getElementById("follows-new-items") // get the reference element (which comes AFTER the inserted element)
+    let refEl = document.getElementById('follows-new-items') // get the reference element (which comes AFTER the inserted element)
     list.insertBefore(newListItem, refEl) // insert the newListItem into the list before refEl
 
     inputTextSpan.classList.remove('item-completed') // this needs to be here because of inputTextSpan's 'item-completed' class being set (in the CSS) to 'text-decoration: line-through;'
@@ -337,13 +329,18 @@ function addCheckbox(newItem, textSpan) {
     checkbox.type = 'checkbox'
     newItem.insertBefore(checkbox, textSpan) // insert the checkbox into the newListItem before inputTextSpan
 
-    checkbox.addEventListener('click', function(event) { // better to have event be 'click' or 'change' here? Seems to make no difference
+    // this is here so that the checkboxes, when checked, retain their blue color and checkmark
+    if (toDos[newItem.id - 1].completed == true) {
+        checkbox.setAttribute('checked', true)
+    } else {
+        checkbox.removeAttribute('checked')
+    }
+
+    checkbox.addEventListener('click', function(event) {
         if (event.target.checked) {
-            event.target.setAttribute('checked', true) /////////////////
             textSpan.classList.add('item-completed')
             updateItemsLeft(newItem, true)
         } else {
-            event.target.removeAttribute('checked') /////////////////
             textSpan.classList.remove('item-completed')
             updateItemsLeft(newItem, false) 
         }
@@ -369,18 +366,11 @@ function updateItemsLeft(item, bool) {
 // 'Clear Completed' button
 document.getElementById('clear-completed-btn').addEventListener('click', function() {
     Array.from(list.children).forEach(listItem => { // 'list' (which is the variable name for my 'ul') is just one object, so we need to use 'list.children'. 'list.children', however, is an array-like object, not an array, so we need to make it an array with 'Array.from'
-        if (listItem.firstElementChild.checked) { // 'firstChild' or 'firstElementChild'? Doesn't seem to make a difference here
+        if (listItem.firstElementChild.checked) {
             listItem.remove()
         }
     })
 })
-
-
-
-
-////////////////////////////// working on the below //////////////////////////////
-
-// ******QQQ******: THE CHECKBOX ITSELF UNCHECKS (the checkmark and the blue of the checkbox disappear) UPON CLICK OF EACH BUTTON. I think it's because everything's removed and there's no way to add back the 'checkedness' of the checkbox. But addCheckbox is called in each button's event handler. I don't know. I've tried a few things but none has fixed it.
 
 // removeItems removes all dynamically-created list items from the UI and DOM...so that certain items can be added back in
 function removeItems(ulList) {
@@ -391,8 +381,7 @@ function removeItems(ulList) {
     })
 }
 
-// 'All' button - seems to be working
-
+// 'All' button
 document.getElementById('all-btn').addEventListener('click', function() {
     removeItems(list)
 
@@ -406,7 +395,7 @@ document.getElementById('all-btn').addEventListener('click', function() {
         inputTextSpan.appendChild(textNode)
         newListItem.appendChild(inputTextSpan)
 
-        let refEl = document.getElementById("follows-new-items")
+        let refEl = document.getElementById('follows-new-items')
         list.insertBefore(newListItem, refEl)
 
         if (item.completed == false) {
@@ -421,14 +410,11 @@ document.getElementById('all-btn').addEventListener('click', function() {
     })
 })
 
-// 'Active' button - seems to be working
-
+// 'Active' button
 // (Note that the comments here don't just apply to the Active button, but I didn't want to repeat in the other two event handlers.)
-
 // Whenever one of the three buttons is clicked...
 document.getElementById('active-btn').addEventListener('click', function() {
     // Erase the whiteboard so you start clean (the white board has no memory of what was just written on it)
-    // NOTE: I'm doing it this way instead of the way you did because of the way my <ul> (with id of "list") has in it other <li> items besides just the dynamically added <li> items
     removeItems(list)
 
     // Refer to the database, containing all the items ever added to it [and] Filter it by the ones that should be displayed based on the button that was clicked 
@@ -445,7 +431,7 @@ document.getElementById('active-btn').addEventListener('click', function() {
         inputTextSpan.appendChild(textNode)
         newListItem.appendChild(inputTextSpan)
 
-        let refEl = document.getElementById("follows-new-items")
+        let refEl = document.getElementById('follows-new-items')
         list.insertBefore(newListItem, refEl)
 
         inputTextSpan.classList.remove('item-completed')
@@ -453,13 +439,10 @@ document.getElementById('active-btn').addEventListener('click', function() {
         addCloseBtn(newListItem)
         addCheckbox(newListItem, inputTextSpan)
         prepareUI()
-            
-        // updateItemsLeft(newListItem, false) // I think this is unnecessary here
     })
 })
 
-// 'Completed' button - seems to be working
-
+// 'Completed' button
 document.getElementById('completed-btn').addEventListener('click', function() {
     removeItems(list)
 
@@ -475,7 +458,7 @@ document.getElementById('completed-btn').addEventListener('click', function() {
         inputTextSpan.appendChild(textNode)
         newListItem.appendChild(inputTextSpan)
 
-        let refEl = document.getElementById("follows-new-items")
+        let refEl = document.getElementById('follows-new-items')
         list.insertBefore(newListItem, refEl)
 
         inputTextSpan.classList.add('item-completed')
